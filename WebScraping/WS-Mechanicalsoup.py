@@ -2,16 +2,13 @@ import mechanicalsoup
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Define the URL
 url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#S&P_500_component_stocks"
 
-# Initialize MechanicalSoup Browser
+# initialize MechanicalSoup browser
 browser = mechanicalsoup.Browser()
-
-# Get HTML content
 response = browser.get(url)
 
-# Extracting data from the table
+# extract data from table
 table = response.soup.find('table', {'class': 'wikitable sortable'})
 
 data = []
@@ -21,14 +18,14 @@ for row in rows[1:]:
     columns = [column.text.strip() for column in columns]
     data.append(columns)
 
-# Convert data to DataFrame
+# Convert data to df
 columns = ["Symbol", "Security", "GICS Sector", "GICS Sub-Industry", "Headquarters", "Date added", "CIK", "Founded"]
 df = pd.DataFrame(data, columns=columns)
 
-# Save data to CSV
+# save to CSV
 df.to_csv('MechanicalSoupWebScraping.csv', index=False)
 
-# Plotting
+# plot
 sector_counts = df['GICS Sector'].value_counts()
 sorted_sector_counts = sector_counts.sort_values(ascending=False)
 top_sectors = sorted_sector_counts.head(5)
